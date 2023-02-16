@@ -1,0 +1,71 @@
+GET http://localhost:8000/api/getcustomer/12weeks HTTP/1.1
+content-type: application/json
+authorization: c8ac9d9383402a57ce82c92c1c6225d4a251118a
+
+
+GET http://localhost:8000/api/getcustomer/15weeks HTTP/1.1
+content-type: application/json
+authorization: c8ac9d9383402a57ce82c92c1c6225d4a251118a
+
+POST http://localhost:8000/api/getcustomer/create HTTP/1.1
+content-type: application/json
+Authorization: c8ac9d9383402a57ce82c92c1c6225d4a251118a
+
+ {
+    "name": "Abinandhu",
+    "place": "panruti",
+    "address": "",
+    "contact": "",
+    "email": "",
+    "amount": 20000,
+    "description": "",
+    "date": "12-2-2023",
+    "end_date": "12-2-2023",
+    "periods": "15weeks",
+    "created_at": "2023-02-12T06:27:47.145664Z"
+  }
+
+{
+    "name": "Duraisamy",
+    "place": "Panruti",
+    "address": "4/23, police line 7th street, panruti - 607106",
+    "contact": "8870652361",
+    "email": "",
+    "amount": "52000",
+    "description": "",
+    "date": "2023-02-12",
+    "end_date": "",
+    "periods": "12weeks"
+}
+
+
+GET http://localhost:8000/api/collection1/ HTTP/1.1
+content-type: application/json
+authorization: c8ac9d9383402a57ce82c92c1c6225d4a251118a
+
+
+GET http://localhost:8000/api/getcustomermonthly HTTP/1.1
+content-type: application/json
+authorization: c8ac9d9383402a57ce82c92c1c6225d4a251118a
+
+
+{
+    "name": "Duraisamy",
+    "place": "Panruti",
+    "address": "Police LIne",
+    "contact": "8870652361",
+    "email": "",
+    "amount": "50000",
+    "balance": "50000",
+    "start_date": "2023-01-01",
+    "end_date": "2023-02-01",
+    "intrest": "2.5",
+    "total_amount": 3100,
+    "description": ""
+}
+
+
+POST https://api.estubank.com/api/v1/early-access HTTP/1.1
+content-type: application/json
+
+ { email: "xyz@gmail.com" }
