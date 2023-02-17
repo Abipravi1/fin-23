@@ -174,9 +174,9 @@ export default function MonthlyCollectionComponent() {
 											{item.name}
 										</td>
 										<td>{item.place}</td>
-										<td>{tot}</td>
 										<td>{parseInt(item.total_amount)}</td>
-										<td>{tot - item.total_amount}</td>
+										<td>{parseInt(item.paid)}</td>
+										<td>{parseInt(item.total_amount) - parseInt(item.paid)}</td>
 										<td>
 											<Button
 												variant='outlined'

@@ -17,5 +17,7 @@ urlpatterns = [
     path("collection/save/montlhy/", monthlyLoanCollection),
     path("collection/update/montlhy/<str:id>/", monthlyLoanCollectionUpdate),
     path("collection/get/monthly/<str:pk>/<str:id>/", customerCollectionmontlhy),
+    path("inchargecollection/", InchargeCollection),
+    path("inchargecollection/<str:id>/", InchargeCollectionUpdate),
     path("CIH/", calculateCIH),
 ]

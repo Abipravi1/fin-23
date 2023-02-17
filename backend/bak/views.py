@@ -314,6 +314,39 @@ def weeklyLoanCollectionUpdate(request, id):
     col.save()
     return Response({'status':'Success'}, status=status.HTTP_200_OK)
 
+@api_view(['POST'])
+def InchargeCollection(request):
+    id =  request.data.get('customer_id')
+    cname =  request.data.get('customer_name')
+    amount =  request.data.get('amount')
+    date =  request.data.get('date')
+    col = InchargeAcc.objects.create(incharge_id=id,amount=amount,date=date)
+    col.save()
+    customer = Incharge.objects.get(id=id)
+    paid = int(customer.total_paid) + int(amount)
+    customer.total_paid = paid
+    customer.save()
+    return Response({'status':'Success'}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def InchargeCollectionUpdate(request, id):
+    amount =  request.data.get('amount')
+    col = InchargeAcc.objects.get(id=id)  
+    prev_amount = col.amount
+    cust_id = col.incharge_id
+    cust = Incharge.objects.get(id=cust_id)
+    balance = cust.total_paid
+    newBal = 0
+    if int(prev_amount) < int(amount):
+        newBal = int(balance) + (int(amount) - int(prev_amount))
+    if int(prev_amount) > int(amount):
+        newBal = int(balance) - (int(prev_amount) - int(amount))
+    cust.total_paid = newBal
+    cust.save()
+    col.amount = amount
+    col.save()
+    return Response({'status':'Success'}, status=status.HTTP_200_OK)
+
 @api_view(['GET'])
 def customerCollection(request, pk):
     aa = AmountCollection.objects.filter(loan_id=pk)
@@ -329,8 +362,8 @@ def monthlyLoanCollection(request):
     col = AmountCollection.objects.create(loan_id=id,name=cname,amount=amount,date=date, type="monthly")
     col.save()
     customer = MonthlyLoans.objects.get(id=id)
-    balance = int(customer.total_amount) - int(amount)
-    customer.total_amount = balance
+    paid = int(customer.total_paid) + int(amount)
+    customer.intrest_paid = balance
     customer.save()
     return Response({'status':'Success'}, status=status.HTTP_200_OK)
 
@@ -341,12 +374,12 @@ def monthlyLoanCollectionUpdate(request, id):
     prev_amount = col.amount
     cust_id = col.loan_id
     cust = MonthlyLoans.objects.get(id=cust_id)
-    balance = cust.total_amount
+    balance = cust.total_paid
     newBal = 0
     if int(prev_amount) < int(amount):
-        newBal = int(balance) - (int(amount) - int(prev_amount))
+        newBal = int(balance) + (int(amount) - int(prev_amount))
     if int(prev_amount) > int(amount):
-        newBal = int(balance) + (int(prev_amount) - int(amount))
+        newBal = int(balance) - (int(prev_amount) - int(amount))
     cust.total_amount = newBal
     cust.save()
     col.amount = amount

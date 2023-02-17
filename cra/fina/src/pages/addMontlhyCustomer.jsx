@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AxiosInstance } from '../axios/axios';
-
+import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -9,6 +9,7 @@ import FormControl from '@mui/material/FormControl';
 import toast from 'react-hot-toast';
 
 export default function AddMonthlyCustomer() {
+	const navigate = useNavigate();
 	const [customerData, setCustomerData] = useState({
 		name: '',
 		place: '',
@@ -40,12 +41,21 @@ export default function AddMonthlyCustomer() {
 		return Difference_In_Days;
 	}
 
+	function differenceInMonths(date1, date2) {
+		date1 = new Date(date1);
+		date2 = new Date(date2);
+		const monthDiff = date2.getMonth() - date1.getMonth();
+		const yearDiff = date2.getYear() - date1.getYear();
+
+		return monthDiff + yearDiff * 12;
+	}
+
 	function calculate() {
 		let { start_date, end_date, intrest, amount } = customerData;
-		const diff = diffDays(start_date, end_date);
-		let newInt =
-			((0.08 * parseFloat(intrest) * parseInt(amount)) / 100) * diff +
-			parseInt(amount);
+		const diff = differenceInMonths(start_date, end_date);
+		let newInt = Math.floor(
+			(parseInt(amount) / 100) * parseInt(intrest) * diff + parseInt(amount),
+		);
 		newInt = newInt.toString();
 		setCustomerData({ ...customerData, total_amount: newInt });
 	}
@@ -54,6 +64,7 @@ export default function AddMonthlyCustomer() {
 		AxiosInstance.post('/getcustomermonthly/', customerData).then(
 			(res) => {
 				toast.success('Customer Data Added');
+				navigate('/montlhy');
 			},
 			(err) => toast.error('Invalid Customer Data'),
 		);
