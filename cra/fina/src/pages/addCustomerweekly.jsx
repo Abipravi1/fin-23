@@ -62,8 +62,10 @@ export default function AddCustomerWeekly() {
 
 	return (
 		<div className='d-flex flex-column p-2  align-items-center'>
+			
 			<div className='d-flex flex-column shadow-xl border rounded gap-4 align-items-center p-3 w-25'>
 				<h3>Weekly loan</h3>
+				
 				<TextField
 					id='outlined-basic'
 					label='Customer Name'
