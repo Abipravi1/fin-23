@@ -6,6 +6,7 @@ import MakeCollection from './monthly/makeCollection';
 import CollectionHistoryCompnentMonthly from './monthly/CoH';
 import { Button } from '@mui/material';
 import EditLoans from './monthly/editLoans';
+import CloseLoan from './monthly/closeLoan';
 
 export default function MonthlyCollectionComponent() {
 	const [data, setdata] = useState([]);
@@ -16,6 +17,7 @@ export default function MonthlyCollectionComponent() {
 	const [showHistory, setShowHistory] = useState(false);
 	const [showpage, setshowpage] = useState(false);
 	const [edit, setedit] = useState(false);
+	const [close, setClose] = useState(false);
 
 	function dataGet() {
 		AxiosInstance.get(`/getcustomermonthly/`).then((res) => {
@@ -26,10 +28,6 @@ export default function MonthlyCollectionComponent() {
 	useEffect(() => {
 		dataGet();
 	}, [weeks]);
-
-	const addmoney = () => {
-		setshowpage(true);
-	};
 
 	function calculate(start_date, end_date, intrest, amount) {
 		let date1 = new Date(start_date);
@@ -58,6 +56,29 @@ export default function MonthlyCollectionComponent() {
 						left: '30%',
 					}}>
 					<EditLoans setedit={setedit} customer_id={cid ? cid : 0} />{' '}
+				</div>
+			) : null}
+
+			{close ? (
+				<div
+					className='d-flex flex-column gap-3 align-items-start p-3'
+					style={{
+						position: 'absolute',
+						width: '50%',
+						zIndex: 1,
+						top: '15%',
+						left: '15%',
+						maxHeight: '90%',
+						height: '80%',
+						overflow: 'auto',
+						boxShadow: '-1px 1px 8px #80808059',
+						borderRadius: 10,
+						backgroundColor: 'white',
+					}}>
+					<button className='btn btn-primary' onClick={(_) => setClose(false)}>
+						Close
+					</button>
+					<CloseLoan setClose={setClose} customer_id={cid ? cid : 0} />{' '}
 				</div>
 			) : null}
 			{showHistory ? (
@@ -190,7 +211,7 @@ export default function MonthlyCollectionComponent() {
 											<Button
 												variant='outlined'
 												onClick={(_) => {
-													setshowpage(true);
+													setClose(true);
 													setCId(item.id);
 												}}>
 												<i class='bi bi-currency-dollar'></i>
