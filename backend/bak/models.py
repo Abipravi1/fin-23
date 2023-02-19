@@ -23,9 +23,8 @@ class MonthlyLoans(models.Model):
     email = models.EmailField(blank=True)
     amount = models.IntegerField(default=0)
     start_date = models.CharField(max_length=100)
-    end_date = models.CharField(max_length=100)
+    end_date = models.CharField(max_length=100, blank=True)
     intrest = models.CharField(max_length=100)
-    total_amount = models.DecimalField(default=0, decimal_places=2, max_digits=10)
     total_paid = models.DecimalField(default=0, decimal_places=2, max_digits=10)
     intrest_paid = models.DecimalField(default=0, decimal_places=2, max_digits=10)
     balance = models.IntegerField(default=0)
@@ -63,7 +62,7 @@ class Incharge(models.Model):
     created_at = models.DateTimeField(auto_now=True)
 
 class InchargeAcc(models.Model):
-    incharge_id = models.IntegerField()
+    incharge_id = models.CharField(max_length=100, blank=True)
     amount = models.DecimalField(default=0, decimal_places=2, max_digits=10)
     date = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now=True)

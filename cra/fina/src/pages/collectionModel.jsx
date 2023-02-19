@@ -6,11 +6,11 @@ import CollectionHistoryCompnent from './collectionHistory';
 
 export default function CollectionModel({ customer_id, close, calla }) {
 	const [data, setData] = useState({
-		amount: 500,
+		amount: 0,
 		date: `${new Date().getFullYear()}-${
 			new Date().getMonth() < 10
-				? '0' + new Date().getMonth().toString()
-				: new Date().getMonth()
+				? '0' + (new Date().getMonth() + 1).toString()
+				: new Date().getMonth() + 1
 		}-${
 			new Date().getDate() < 10
 				? '0' + new Date().getDate().toString()

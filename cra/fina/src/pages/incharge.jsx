@@ -72,7 +72,7 @@ export default function Incharge() {
 					size='small'
 					variant='outlined'
 				/>
-				<TextField
+				{/* <TextField
 					id='outlined-basic'
 					label='Amount'
 					className='form-control'
@@ -85,7 +85,7 @@ export default function Incharge() {
 					}
 					size='small'
 					variant='outlined'
-				/>
+				/> */}
 				<TextField
 					id='outlined-basic'
 					type='date'
@@ -99,7 +99,6 @@ export default function Incharge() {
 				<button onClick={saveData} className='btn btn-primary'>
 					Save
 				</button>
-				<h1>testing</h1>
 			</div>
 		</div>
 	);

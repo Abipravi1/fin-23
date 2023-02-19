@@ -314,38 +314,52 @@ def weeklyLoanCollectionUpdate(request, id):
     col.save()
     return Response({'status':'Success'}, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def InchargeCollection(request):
-    id =  request.data.get('customer_id')
-    cname =  request.data.get('customer_name')
-    amount =  request.data.get('amount')
-    date =  request.data.get('date')
-    col = InchargeAcc.objects.create(incharge_id=id,amount=amount,date=date)
-    col.save()
-    customer = Incharge.objects.get(id=id)
-    paid = int(customer.total_paid) + int(amount)
-    customer.total_paid = paid
-    customer.save()
-    return Response({'status':'Success'}, status=status.HTTP_200_OK)
+    token = request.headers.get('authorization')
+    if check_auth(token) == True:
+        if request.method == 'POST':
+            id =  request.data.get('customer_id')
+            amount =  request.data.get('amount')
+            date =  request.data.get('date')
+            col = InchargeAcc.objects.create(incharge_id=id,amount=amount,date=date)
+            col.save()
+            customer = Incharge.objects.get(id=id)
+            paid = int(customer.total_paid) + int(amount)
+            customer.total_paid = paid
+            customer.save()
+            return Response({'status':'Success'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'failed', 'Result':'Get request is has no function to do'})
 
-@api_view(['POST'])
+
+@api_view(['GET','POST'])
 def InchargeCollectionUpdate(request, id):
-    amount =  request.data.get('amount')
-    col = InchargeAcc.objects.get(id=id)  
-    prev_amount = col.amount
-    cust_id = col.incharge_id
-    cust = Incharge.objects.get(id=cust_id)
-    balance = cust.total_paid
-    newBal = 0
-    if int(prev_amount) < int(amount):
-        newBal = int(balance) + (int(amount) - int(prev_amount))
-    if int(prev_amount) > int(amount):
-        newBal = int(balance) - (int(prev_amount) - int(amount))
-    cust.total_paid = newBal
-    cust.save()
-    col.amount = amount
-    col.save()
-    return Response({'status':'Success'}, status=status.HTTP_200_OK)
+    token = request.headers.get('authorization')
+    if check_auth(token) == True:
+        if request.method == 'POST':
+            amount =  request.data.get('amount')
+            col = InchargeAcc.objects.get(id=id)  
+            prev_amount = col.amount
+            cust_id = col.incharge_id
+            cust = Incharge.objects.get(id=cust_id)
+            balance = cust.total_paid
+            newBal = 0
+            if int(prev_amount) < int(amount):
+                newBal = int(balance) + (int(amount) - int(prev_amount))
+            if int(prev_amount) > int(amount):
+                newBal = int(balance) - (int(prev_amount) - int(amount))
+            cust.total_paid = newBal
+            cust.save()
+            col.amount = amount
+            col.save()
+            return Response({'status':'Success'}, status=status.HTTP_200_OK)
+        elif request.method == 'GET':
+            aa = InchargeAcc.objects.filter(incharge_id=id)
+            ser = InchargeAccSerializers(aa, many=True)
+            return Response({'status':'success', 'data':ser.data}, status=status.HTTP_200_OK)
+    else:
+        return Response({'status':'auth failed'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['GET'])
 def customerCollection(request, pk):
@@ -354,34 +368,62 @@ def customerCollection(request, pk):
     return Response({'status':'Success', 'data':ser.data}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
-def monthlyLoanCollection(request):
+def monthlyLoanCollection(request, type):
     id =  request.data.get('customer_id')
     cname =  request.data.get('customer_name')
     amount =  request.data.get('amount')
     date =  request.data.get('date')
-    col = AmountCollection.objects.create(loan_id=id,name=cname,amount=amount,date=date, type="monthly")
-    col.save()
+    if type == 'principle':
+        col = AmountCollection.objects.create(loan_id=id,name=cname,amount=amount,date=date, type="monthly")
+        col.save()
+    elif type == 'intrest':
+        col = MonthIntrestCollection.objects.create(loan_id=id,name=cname,amount=amount,date=date)
+        col.save()
+        
     customer = MonthlyLoans.objects.get(id=id)
-    paid = int(customer.total_paid) + int(amount)
-    customer.intrest_paid = balance
+    
+    if type == 'principle':
+        total_paid = int(customer.total_paid) + int(amount)
+        customer.balance = customer.amount - total_paid
+        customer.total_paid = total_paid
+    elif type == 'intrest':
+        intrest_paid = int(customer.intrest_paid) + int(amount)
+        customer.intrest_paid = intrest_paid
+        
     customer.save()
+   
     return Response({'status':'Success'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
-def monthlyLoanCollectionUpdate(request, id):
+def monthlyLoanCollectionUpdate(request, id, type):
     amount =  request.data.get('amount')
-    col = AmountCollection.objects.get(id=id)  
+    col = None
+    if type == 'intrest':
+        col = MonthIntrestCollection.objects.get(id=id) 
+    elif type == 'principle':
+        col = AmountCollection.objects.get(id=id)
     prev_amount = col.amount
     cust_id = col.loan_id
     cust = MonthlyLoans.objects.get(id=cust_id)
-    balance = cust.total_paid
-    newBal = 0
-    if int(prev_amount) < int(amount):
-        newBal = int(balance) + (int(amount) - int(prev_amount))
-    if int(prev_amount) > int(amount):
-        newBal = int(balance) - (int(prev_amount) - int(amount))
-    cust.total_amount = newBal
-    cust.save()
+    if type == 'principle':
+        balance = cust.total_paid
+        newBal = 0
+        if int(prev_amount) < int(amount):
+            newBal = int(balance) + (int(amount) - int(prev_amount))
+        if int(prev_amount) > int(amount):
+            newBal = int(balance) - (int(prev_amount) - int(amount))
+        cust.total_paid = newBal
+        cust.balance = cust.amount - newBal
+        cust.save()
+    elif type == 'intrest':
+        balance = cust.intrest_paid
+        newBal = 0
+        if int(prev_amount) < int(amount):
+            newBal = int(balance) + (int(amount) - int(prev_amount))
+        if int(prev_amount) > int(amount):
+            newBal = int(balance) - (int(prev_amount) - int(amount))
+        cust.intrest_paid = newBal
+        cust.save()
     col.amount = amount
     col.save()
     return Response({'status':'Success'}, status=status.HTTP_200_OK)
@@ -399,6 +441,39 @@ def calculateCIH(request):
     totalLoansM = MonthlyLoans.objects.aggregate(Sum('amount'))
     totalincharge = Incharge.objects.aggregate(Sum('amount'))
     totalBalance = Customers.objects.aggregate(Sum('balance'))
-    totalBalanceMonthly = MonthlyLoans.objects.aggregate(Sum('total_amount'))
-    cih = (int(totalLoans['amount__sum']) + int(totalLoansM['amount__sum'])) - (int(totalincharge['amount__sum']) + int(totalBalance['balance__sum']) + int(totalBalanceMonthly['total_amount__sum']))
+    totalBalanceMonthly = MonthlyLoans.objects.aggregate(Sum('amount'))
+    cih = (int(totalLoans['amount__sum']) + int(totalLoansM['amount__sum'])) - (int(totalincharge['amount__sum']) + int(totalBalance['balance__sum']) + int(totalBalanceMonthly['amount__sum']))
     return Response({'status':'Success', 'data': {'LoansWeekly': totalLoans, 'Monthly': totalLoansM, 'BalanceMonthly': totalBalanceMonthly, 'balanceWeekly':totalBalance, 'inchage': totalincharge,'cih':cih}}, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'POST'])
+def getCollectionDetails(request, id):
+    token = request.headers.get('authorization')
+    if check_auth(token) == True:
+        if request.method == 'GET':
+            data = InchargeAcc.objects.get(id=id)
+            ser = InchargeAccSerializers(data, many=False)
+            return Response({'status':'success', 'data':ser.data}, status=status.HTTP_200_OK)
+        elif request.method == 'POST':
+            amount = request.data.get('amount')
+            data = InchargeAcc.objects.get(id=id)
+            data.amount = amount
+            inc = Incharge.objects.get(id=data.incharge_id)
+            if amount > data.amount:
+                inc.total_paid = int(inc.total_paid) + int(amount)
+            elif amount < data.amount:
+                inc.total_paid = int(inc.total_paid) - int(amount)
+            inc.save()
+            data.save()
+            return Response({'status':'Success'}, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'POST'])
+def getIntrest(request, id):
+    data = MonthIntrestCollection.objects.filter(loan_id=id)
+    ser = MonthIntrestCollectionSerializers(data, many=True)
+    return Response({'status':'success', 'data':ser.data}, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'POST'])
+def getIntrestDetails(request, id):
+    data = MonthIntrestCollection.objects.get(id=id)
+    ser = MonthIntrestCollectionSerializers(data)
+    return Response({'status':'success', 'data':ser.data}, status=status.HTTP_200_OK)

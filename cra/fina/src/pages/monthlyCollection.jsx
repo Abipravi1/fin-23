@@ -148,8 +148,8 @@ export default function MonthlyCollectionComponent() {
 							<th> Name</th>
 							<th>Place</th>
 							<th>Amount</th>
+							<th>Intrest Paid</th>
 							<th>Balance</th>
-							<th>Paid</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -174,10 +174,10 @@ export default function MonthlyCollectionComponent() {
 											{item.name}
 										</td>
 										<td>{item.place}</td>
-										<td>{parseInt(item.total_amount)}</td>
-										<td>{parseInt(item.paid)}</td>
-										<td>{parseInt(item.total_amount) - parseInt(item.paid)}</td>
-										<td>
+										<td>{parseInt(item.amount)}</td>
+										<td>{parseInt(item.intrest_paid)}</td>
+										<td>{item.balance}</td>
+										<td className='d-flex gap-4'>
 											<Button
 												variant='outlined'
 												onClick={(_) => {
@@ -186,6 +186,15 @@ export default function MonthlyCollectionComponent() {
 												}}>
 												<i class='bi bi-currency-dollar'></i>
 												Collect Money
+											</Button>
+											<Button
+												variant='outlined'
+												onClick={(_) => {
+													setshowpage(true);
+													setCId(item.id);
+												}}>
+												<i class='bi bi-currency-dollar'></i>
+												Close Loan
 											</Button>
 										</td>
 									</tr>

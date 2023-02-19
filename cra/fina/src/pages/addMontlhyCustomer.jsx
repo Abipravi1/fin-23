@@ -20,8 +20,8 @@ export default function AddMonthlyCustomer() {
 		balance: 0,
 		start_date: `${new Date().getFullYear()}-${
 			new Date().getMonth() < 10
-				? '0' + new Date().getMonth().toString()
-				: new Date().getMonth()
+				? '0' + (new Date().getMonth() + 1).toString()
+				: new Date().getMonth() + 1
 		}-${
 			new Date().getDate() < 10
 				? '0' + new Date().getDate().toString()
@@ -140,18 +140,7 @@ export default function AddMonthlyCustomer() {
 					}
 					variant='outlined'
 				/>
-				<TextField
-					id='outlined-basic'
-					type='date'
-					className='form-control'
-					label='End Date'
-					defaultValue={customerData?.start_date}
-					size='small'
-					onChange={(e) =>
-						setCustomerData({ ...customerData, end_date: e.target.value })
-					}
-					variant='outlined'
-				/>
+
 				<TextField
 					id='outlined-basic'
 					type='text'

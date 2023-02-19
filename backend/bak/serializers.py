@@ -28,3 +28,13 @@ class AmountCollectionSerializers(serializers.ModelSerializer):
     class Meta:
         model = AmountCollection
         fields = '__all__'
+    
+class InchargeAccSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = InchargeAcc
+        fields = '__all__'
+
+class MonthIntrestCollectionSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = MonthIntrestCollection
+        fields = '__all__'
