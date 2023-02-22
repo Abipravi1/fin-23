@@ -94,7 +94,7 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm rounded border border-secondary bg-light'>
+										className='p-3 shadow-sm d-card rounded border border-secondary d-flex flex-column'>
 										Total Loans Weekly: {data1?.LoansWeekly.amount__sum}
 									</div>
 									<div
@@ -106,7 +106,7 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm rounded border border-secondary bg-light'>
+										className='p-3 shadow-sm d-card rounded border border-secondary d-flex flex-column'>
 										Total Loans Monthly: {data1?.Monthly.amount__sum}
 									</div>
 									<div
@@ -118,7 +118,7 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm rounded border border-secondary bg-light'>
+										className='p-3 shadow-sm d-card rounded border border-secondary d-flex flex-column'>
 										Weekly Loan Pending Amount:{' '}
 										{data1?.balanceWeekly.balance__sum}
 									</div>
@@ -131,9 +131,9 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm rounded border border-secondary bg-light'>
+										className='p-3 shadow-sm d-card rounded border border-secondary d-flex flex-column'>
 										Monthly Loan Pending Amount:{' '}
-										{data1?.BalanceMonthly.total_amount__sum}
+										{data1?.BalanceMonthly.balance__sum}
 									</div>
 									<div
 										style={{
@@ -144,8 +144,9 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm rounded border border-secondary bg-light'>
-										Incharge Amount: {data1?.inchage.amount__sum}
+										className='p-3 shadow-sm d-card rounded border border-secondary '>
+										Monthly Loan Pending Amount:{' '}
+										{data1?.BalanceMonthly.balance__sum}
 									</div>
 									<div
 										style={{
@@ -156,7 +157,45 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-4 shadow-sm rounded border border-secondary bg-primary text-white'>
+										className='p-3 shadow-sm d-card rounded border border-secondary'>
+										Total Weekly Collection:{' '}
+										{data1?.weeklyCollection.amount__sum}
+									</div>
+									<div
+										style={{
+											cursor: 'pointer',
+											height: 70,
+											textAlign: 'center',
+											alignItems: 'center',
+											justifyContent: 'center',
+											display: 'flex',
+										}}
+										className='p-3 shadow-md d-card rounded border border-secondary '>
+										Total Intrest: {data1?.intrest.amount__sum}
+									</div>
+									<div
+										style={{
+											cursor: 'pointer',
+											height: 70,
+											textAlign: 'center',
+											alignItems: 'center',
+											justifyContent: 'center',
+											display: 'flex',
+										}}
+										className='p-3 shadow-sm d-card rounded border border-secondary d-flex flex-column'>
+										Total Montlhy Collection:{' '}
+										{data1?.monthlyCollection.amount__sum}
+									</div>
+									<div
+										style={{
+											cursor: 'pointer',
+											height: 70,
+											textAlign: 'center',
+											alignItems: 'center',
+											justifyContent: 'center',
+											display: 'flex',
+										}}
+										className='p-4 shadow-sm d-card rounded border border-secondary bg-primary text-white'>
 										Cash In Hand: {Math.abs(data1?.cih)}
 									</div>
 								</div>

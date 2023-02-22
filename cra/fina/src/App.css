@@ -1,0 +1,6 @@
+.d-card:hover {
+    box-shadow:0 5px 5px #02ff74 !important;
+}
+.d-card {
+    transition: .2s all;
+}

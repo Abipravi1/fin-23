@@ -474,7 +474,7 @@ def calculateCIH(request):
     except:
         cih = 0
     
-    return Response({'status':'Success', 'data': {'LoansWeekly': totalLoans, 'Monthly': totalLoansM, 'BalanceMonthly': totalBalanceMonthly, 'balanceWeekly':totalBalance, 'inchage': totalincharge,'cih':cih, "weeklyCollection":totalLoansCollectionW, "monthlyCollection":totalLoansCollectionM}}, status=status.HTTP_200_OK)
+    return Response({'status':'Success', 'data': {'LoansWeekly': totalLoans, 'Monthly': totalLoansM, 'BalanceMonthly': totalBalanceMonthly, 'balanceWeekly':totalBalance, 'inchage': totalincharge,'cih':cih, "weeklyCollection":totalLoansCollectionW, "monthlyCollection":totalLoansCollectionM, "intrest":totalIntrest}}, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'POST'])
 def getCollectionDetails(request, id):
