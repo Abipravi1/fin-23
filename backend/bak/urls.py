@@ -23,4 +23,5 @@ urlpatterns = [
     path('intrestdata/<str:id>/', getIntrest),
     path('intrestdatadetails/<str:id>/', getIntrestDetails),
     path("CIH/", calculateCIH),
+    path("close/monthlyloan/", closeLoanMonthly)
 ]

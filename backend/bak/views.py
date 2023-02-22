@@ -281,6 +281,11 @@ def collection_details(request, id):
         return Response(
             {'status': 'Auth Failed'}, status=status.HTTP_401_UNAUTHORIZED)
 
+def closeLoanWeekly(id):
+    loan = Customers.objects.filter(id=id).update(active=False)
+    loan1 = AmountCollection.objects.filter(loan_id=id).update(active=False)
+    return Response({'status':'success', 'data':'Loan Closed'}, status=status.HTTP_200_OK)
+
 @api_view(['POST'])
 def weeklyLoanCollection(request):
     id =  request.data.get('customer_id')
@@ -293,6 +298,8 @@ def weeklyLoanCollection(request):
     balance = int(customer.balance) - int(amount)
     customer.balance = balance
     customer.save()
+    if balance==0:
+        closeLoanWeekly(id)
     return Response({'status':'Success'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
@@ -363,7 +370,7 @@ def InchargeCollectionUpdate(request, id):
 
 @api_view(['GET'])
 def customerCollection(request, pk):
-    aa = AmountCollection.objects.filter(loan_id=pk)
+    aa = AmountCollection.objects.filter(type="weekly").filter(loan_id=pk)
     ser = AmountCollectionSerializers(aa, many=True)
     return Response({'status':'Success', 'data':ser.data}, status=status.HTTP_200_OK)
 
@@ -437,13 +444,22 @@ def customerCollectionmontlhy(request, pk, id):
 
 @api_view(['GET'])
 def calculateCIH(request):
-    totalLoans = Customers.objects.aggregate(Sum('amount'))
-    totalLoansM = MonthlyLoans.objects.aggregate(Sum('amount'))
-    totalincharge = Incharge.objects.aggregate(Sum('amount'))
-    totalBalance = Customers.objects.aggregate(Sum('balance'))
-    totalBalanceMonthly = MonthlyLoans.objects.aggregate(Sum('amount'))
-    cih = (int(totalLoans['amount__sum']) + int(totalLoansM['amount__sum'])) - (int(totalincharge['amount__sum']) + int(totalBalance['balance__sum']) + int(totalBalanceMonthly['amount__sum']))
-    return Response({'status':'Success', 'data': {'LoansWeekly': totalLoans, 'Monthly': totalLoansM, 'BalanceMonthly': totalBalanceMonthly, 'balanceWeekly':totalBalance, 'inchage': totalincharge,'cih':cih}}, status=status.HTTP_200_OK)
+    totalLoans = Customers.objects.filter(active=True).aggregate(Sum('amount'))
+    totalLoansM = MonthlyLoans.objects.filter(active=True).aggregate(Sum('amount'))
+    totalincharge = InchargeAcc.objects.filter(active=True).aggregate(Sum('amount'))
+    totalBalance = Customers.objects.filter(active=True).aggregate(Sum('balance'))
+    totalIntrest = MonthIntrestCollection.objects.filter(active=True).aggregate(Sum('amount'))
+    totalLoansCollectionM = AmountCollection.objects.filter(type="monthly").aggregate(Sum('amount'))
+    totalLoansCollectionW = AmountCollection.objects.filter(type="weekly").aggregate(Sum('amount'))
+    totalBalanceMonthly = MonthlyLoans.objects.filter(active=True).aggregate(Sum('balance'))
+    cih = None
+    try:
+        cih = (int(totalLoans['amount__sum']) + int(totalLoansM['amount__sum'])) - (int(totalincharge['amount__sum']) + int(totalIntrest['amount__sum']) + int(totalBalance['balance__sum']) + int(totalBalanceMonthly['balance__sum']) + int(totalLoansCollectionM['amount__sum']))
+    except:
+        cih = 0
+    if totalLoansM['amount__sum'] == None:
+        totalLoansM['amount__sum'] = 0
+    return Response({'status':'Success', 'data': {'LoansWeekly': totalLoans, 'Monthly': totalLoansM, 'BalanceMonthly': totalBalanceMonthly, 'balanceWeekly':totalBalance, 'inchage': totalincharge,'cih':cih, "weeklyCollection":totalLoansCollectionW, "monthlyCollection":totalLoansCollectionM}}, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'POST'])
 def getCollectionDetails(request, id):
@@ -477,3 +493,16 @@ def getIntrestDetails(request, id):
     data = MonthIntrestCollection.objects.get(id=id)
     ser = MonthIntrestCollectionSerializers(data)
     return Response({'status':'success', 'data':ser.data}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def closeLoanMonthly(request):
+    id = request.data.get('customer_id')
+    token = request.headers.get('authorization')
+    if check_auth(token) == True:
+        intrest = MonthIntrestCollection.objects.filter(loan_id=id).update(active=False)
+        loan = MonthlyLoans.objects.filter(id=id).update(active=False)
+        loan = AmountCollection.objects.filter(loan_id=id).update(active=False)
+        return Response({'status':'success', 'data':'Loan Closed'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'status':'Authendication Falied'}, status=status.HTTP_401_UNAUTHORIZED)
+    

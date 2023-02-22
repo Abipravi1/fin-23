@@ -183,41 +183,43 @@ export default function MonthlyCollectionComponent() {
 											item.place.toLocaleLowerCase().includes(search);
 							})
 							.map((item) => {
-								let { start_date, end_date, intrest, amount } = item;
-								const tot = calculate(start_date, end_date, intrest, amount);
 								return (
 									<tr className='user-table' key={item.id}>
-										<td
-											onClick={(_) => {
-												setShowHistory(true);
-												setCId(item.id);
-											}}>
-											{item.name}
-										</td>
-										<td>{item.place}</td>
-										<td>{parseInt(item.amount)}</td>
-										<td>{parseInt(item.intrest_paid)}</td>
-										<td>{item.balance}</td>
-										<td className='d-flex gap-4'>
-											<Button
-												variant='outlined'
-												onClick={(_) => {
-													setshowpage(true);
-													setCId(item.id);
-												}}>
-												<i class='bi bi-currency-dollar'></i>
-												Collect Money
-											</Button>
-											<Button
-												variant='outlined'
-												onClick={(_) => {
-													setClose(true);
-													setCId(item.id);
-												}}>
-												<i class='bi bi-currency-dollar'></i>
-												Close Loan
-											</Button>
-										</td>
+										{item.active ? (
+											<>
+												<td
+													onClick={(_) => {
+														setShowHistory(true);
+														setCId(item.id);
+													}}>
+													{item.name}
+												</td>
+												<td>{item.place}</td>
+												<td>{parseInt(item.amount)}</td>
+												<td>{parseInt(item.intrest_paid)}</td>
+												<td>{item.balance}</td>
+												<td className='d-flex gap-4'>
+													<Button
+														variant='outlined'
+														onClick={(_) => {
+															setshowpage(true);
+															setCId(item.id);
+														}}>
+														<i class='bi bi-currency-dollar'></i>
+														Collect Money
+													</Button>
+													<Button
+														variant='outlined'
+														onClick={(_) => {
+															setClose(true);
+															setCId(item.id);
+														}}>
+														<i class='bi bi-currency-dollar'></i>
+														Close Loan
+													</Button>
+												</td>
+											</>
+										) : null}
 									</tr>
 								);
 							})}

@@ -134,12 +134,6 @@ const EditLoans = ({ setedit, customer_id }) => {
 							variant='outlined'
 							onChange={(e) => setData({ ...data, end_date: e.target.value })}
 						/>
-						<div className='d-flex flex-row gap-3' style={{ height: 50 }}>
-							<p className='btn'>{data.total_amount} : Total Amount</p>{' '}
-							<button onClick={calculate} className='btn btn-dark'>
-								+
-							</button>
-						</div>
 					</Box>
 				</div>
 

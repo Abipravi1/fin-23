@@ -14,6 +14,7 @@ class Customers(models.Model):
     end_date = models.CharField(max_length=100)
     periods = models.CharField(max_length = 100)
     created_at = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
 
 class MonthlyLoans(models.Model):
     name = models.CharField(max_length=100)
@@ -30,6 +31,7 @@ class MonthlyLoans(models.Model):
     balance = models.IntegerField(default=0)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
     
 class MonthIntrestCollection(models.Model):
     loan_id = models.IntegerField()
@@ -37,15 +39,17 @@ class MonthIntrestCollection(models.Model):
     date = models.CharField(max_length=100)
     amount = models.DecimalField(default=0, decimal_places=2, max_digits=10)
     created_at = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
 
 class AmountCollection(models.Model):
     loan_id = models.CharField(max_length=100)
     amount = models.IntegerField(default=0)
     collected_by = models.CharField(max_length=100, default="admin")
     date = models.CharField(max_length=100, default=None)
-    type = models.CharField(max_length=100, blank=True)
+    type = models.CharField(max_length=100, default="weekly")
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
     
 class Incharge(models.Model):
     name = models.CharField(max_length=100)
@@ -60,12 +64,14 @@ class Incharge(models.Model):
     description = models.TextField(blank=True)
     verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
 
 class InchargeAcc(models.Model):
     incharge_id = models.CharField(max_length=100, blank=True)
     amount = models.DecimalField(default=0, decimal_places=2, max_digits=10)
     date = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
     
 class Vouchers(models.Model):
     voucher_name = models.CharField(max_length=100)
