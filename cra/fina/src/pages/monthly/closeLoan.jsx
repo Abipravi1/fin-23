@@ -105,6 +105,15 @@ export default function CloseLoan({ customer_id }) {
 			(res) => {
 				AxiosInstance.post(`close/monthlyloan/`, {
 					customer_id: data?.id,
+					date: `${new Date().getFullYear()}-${
+						new Date().getMonth() < 10
+							? '0' + (new Date().getMonth() + 1).toString()
+							: new Date().getMonth() + 1
+					}-${
+						new Date().getDate() < 10
+							? '0' + new Date().getDate().toString()
+							: new Date().getDate()
+					}`,
 				}).then((res) => toast.success('Loan Closed Successfully'));
 			},
 			(err) => toast.error('Error Saving Amount..'),

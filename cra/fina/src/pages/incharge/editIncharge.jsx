@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { AxiosInstance } from '../axios/axios';
+import { AxiosInstance } from '../../axios/axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import toast from 'react-hot-toast';
 import Switch from '@mui/material/Switch';
 import { Button, FormGroup, FormControlLabel } from '@mui/material';
 
-const EditCustomer = ({ setedit, customer_id }) => {
+const EditIncharge = ({ setedit, customer_id }) => {
 	const [data, setData] = useState({});
 
 	const Get = () => {
-		AxiosInstance.get(`customer/${customer_id}/`).then((res) => {
+		AxiosInstance.get(`incharge/${customer_id}/`).then((res) => {
 			setData(res.data);
 		});
 	};
 
 	const Save = () => {
-		AxiosInstance.put(`customer/${customer_id}/`, data).then(
+		AxiosInstance.put(`incharge/${customer_id}/`, data).then(
 			(res) => {
 				toast.success('Saved Successfullly');
 				window.location.reload();
@@ -30,11 +30,11 @@ const EditCustomer = ({ setedit, customer_id }) => {
 	}, []);
 
 	const saveActive = () => {
-		AxiosInstance.post(`active/weeklyloan/`, {
+		AxiosInstance.post(`active/incharge/`, {
 			customer_id: customer_id,
 			state: data.active ? 'deactive' : 'active',
 		}).then((res) => {
-			toast.success('Activated');
+			toast.success('Status Updated');
 			window.location.reload();
 		});
 	};
@@ -42,7 +42,7 @@ const EditCustomer = ({ setedit, customer_id }) => {
 	return (
 		<div>
 			<button
-				className='btn btn-primary'
+				className='btn btn-danger'
 				onClick={() => setedit(false)}
 				style={{ margin: '10px' }}
 				variant='primary'>
@@ -86,28 +86,6 @@ const EditCustomer = ({ setedit, customer_id }) => {
 							variant='outlined'
 							onChange={(e) => setData({ ...data, place: e.target.value })}
 						/>
-						<p>Loan Amount</p>
-						<input
-							id='outlined-basic'
-							label='Amount'
-							className='form-control'
-							size='small'
-							defaultValue={data.amount}
-							variant='outlined'
-							type='number'
-							onChange={(e) => setData({ ...data, amount: e.target.value })}
-						/>
-						<p>Balance</p>
-						<input
-							id='outlined-basic'
-							label='Amount'
-							className='form-control'
-							size='small'
-							defaultValue={data.balance}
-							variant='outlined'
-							type='number'
-							onChange={(e) => setData({ ...data, balance: e.target.value })}
-						/>
 						<p>Contact</p>
 						<input
 							id='outlined-basic'
@@ -149,4 +127,4 @@ const EditCustomer = ({ setedit, customer_id }) => {
 	);
 };
 
-export default EditCustomer;
+export default EditIncharge;

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { AxiosInstance } from '../axios/axios';
-import { useNavigate } from 'react-router-dom';
+import { Form, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import CollectionHistoryCompnent from './collectionHistory';
 import CollectionModel from './collectionModel';
 import EditCustomer from './EditCustomer';
-import { Button } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import { Button, FormGroup, FormControlLabel } from '@mui/material';
 
 export default function WeeklyCollectionComponent() {
 	const [data, setdata] = useState([]);
@@ -16,6 +17,7 @@ export default function WeeklyCollectionComponent() {
 	const [showHistory, setShowHistory] = useState(false);
 	const [showpage, setshowpage] = useState(false);
 	const [edit, setedit] = useState(false);
+	const [filterActive, setFilterActive] = useState(true);
 
 	function dataGet() {
 		AxiosInstance.get(`/getcustomer/${weeks}weeks/`).then(
@@ -35,9 +37,25 @@ export default function WeeklyCollectionComponent() {
 		dataGet();
 	}, [weeks]);
 
-	const addmoney = () => {
-		setshowpage(true);
+	const sum = () => {
+		let s = 0;
+		if (filterActive) {
+			for (let i = 0; i < data.length; i++) {
+				s += data[i].active
+					? parseInt(data[i].amount) - parseInt(data[i].balance)
+					: 0;
+			}
+		} else {
+			for (let i = 0; i < data.length; i++) {
+				s += !data[i].active
+					? parseInt(data[i].amount) - parseInt(data[i].balance)
+					: 0;
+			}
+		}
+		return s;
 	};
+	{
+	}
 
 	return (
 		<div className='p-3'>
@@ -131,11 +149,22 @@ export default function WeeklyCollectionComponent() {
 						</select>
 					</div>
 					<input
-						className='form-control w-75'
+						className='form-control w-50'
 						placeholder='Search Name | Place'
 						aria-label='First name'
 						onChange={(e) => setsearch(e.target.value)}
 					/>
+					<FormGroup>
+						<FormControlLabel
+							control={
+								<Checkbox
+									defaultValue={!filterActive}
+									onChange={(e) => setFilterActive((re) => !re)}
+								/>
+							}
+							label='Show Closed Loans'
+						/>
+					</FormGroup>
 					<Button
 						variant='outlined'
 						color='secondary'
@@ -175,32 +204,75 @@ export default function WeeklyCollectionComponent() {
 							})
 							.map((item) => {
 								return (
-									<tr className='user-table' key={item.id}>
-										<td
-											onClick={(_) => {
-												setShowHistory(true);
-												setCId(item.id);
-											}}>
-											{item.name}
-										</td>
-										<td>{item.place}</td>
-										<td>{item.amount}</td>
-										<td>{item.balance}</td>
-										<td>{item.amount - item.balance}</td>
-										<td>
-											<Button
-												variant='outlined'
-												onClick={(_) => {
-													setshowpage(true);
-													setCId(item.id);
-												}}>
-												<i class='bi bi-currency-dollar'></i>
-												Collect Money
-											</Button>
-										</td>
-									</tr>
+									<>
+										<tr className='user-table' key={item.id}>
+											{filterActive ? (
+												item.active ? (
+													<>
+														<td
+															onClick={(_) => {
+																setShowHistory(true);
+																setCId(item.id);
+															}}>
+															{item.name}
+														</td>
+														<td>{item.place}</td>
+														<td>{item.amount}</td>
+														<td>{item.balance}</td>
+														<td>{item.amount - item.balance}</td>
+														<td>
+															<Button
+																variant='outlined'
+																onClick={(_) => {
+																	setshowpage(true);
+																	setCId(item.id);
+																}}>
+																<i class='bi bi-currency-dollar'></i>
+																Collect Money
+															</Button>
+														</td>
+													</>
+												) : null
+											) : !item.active ? (
+												<>
+													<td
+														onClick={(_) => {
+															setShowHistory(true);
+															setCId(item.id);
+														}}>
+														{item.name}
+													</td>
+													<td>{item.place}</td>
+													<td>{item.amount}</td>
+													<td>{item.balance}</td>
+													<td>{item.amount - item.balance}</td>
+													<td>
+														<Button
+															variant='outlined'
+															onClick={(_) => {
+																setshowpage(true);
+																setCId(item.id);
+															}}>
+															<i class='bi bi-currency-dollar'></i>
+															Collect Money
+														</Button>
+													</td>
+												</>
+											) : null}
+										</tr>
+									</>
 								);
 							})}
+						<tr>
+							<td>
+								<b>Total</b>
+							</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>{sum()}</td>
+							<td></td>
+						</tr>
 					</tbody>
 				</table>
 			</div>

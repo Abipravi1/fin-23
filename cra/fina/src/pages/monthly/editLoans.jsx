@@ -3,7 +3,8 @@ import { AxiosInstance } from '../../axios/axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import toast from 'react-hot-toast';
-import { Button } from '@mui/material';
+import Switch from '@mui/material/Switch';
+import { Button, FormGroup, FormControlLabel } from '@mui/material';
 
 const EditLoans = ({ setedit, customer_id }) => {
 	const [data, setData] = useState({});
@@ -24,6 +25,16 @@ const EditLoans = ({ setedit, customer_id }) => {
 			},
 			(err) => toast.error('Failed to save data'),
 		);
+	};
+
+	const saveActive = () => {
+		AxiosInstance.post(`active/montlhyloan/`, {
+			customer_id: customer_id,
+			state: data.active ? 'deactive' : 'active',
+		}).then((res) => {
+			toast.success('Activated');
+			window.location.reload();
+		});
 	};
 
 	function diffDays(date1, date2) {
@@ -134,6 +145,18 @@ const EditLoans = ({ setedit, customer_id }) => {
 							variant='outlined'
 							onChange={(e) => setData({ ...data, end_date: e.target.value })}
 						/>
+						<FormGroup>
+							<FormControlLabel
+								control={
+									<Switch
+										onChange={saveActive}
+										checked={data?.active}
+										color='secondary'
+									/>
+								}
+								label={'Status '}
+							/>
+						</FormGroup>
 					</Box>
 				</div>
 

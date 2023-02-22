@@ -40,9 +40,11 @@ export default function CollectionHistoryCompnent({
 			{!edit ? (
 				<div className='bg-light text-align-left align-items-center w-100 p-3 rounded shadow-sm m-2 d-flex flex-row gap-3'>
 					<p className='h6'>Customer Name: {customer?.name}</p>
-					<button onClick={delete1} className='btn btn-danger'>
-						Delete
-					</button>
+					{customer?.active ? null : (
+						<button onClick={delete1} className='btn btn-danger'>
+							Delete
+						</button>
+					)}
 					<button className='btn btn-success' onClick={() => setedit(true)}>
 						Edit
 					</button>

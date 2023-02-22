@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import MakeCollection from './monthly/makeCollection';
 import CollectionHistoryCompnentMonthly from './monthly/CoH';
-import { Button } from '@mui/material';
 import EditLoans from './monthly/editLoans';
 import CloseLoan from './monthly/closeLoan';
+import Checkbox from '@mui/material/Checkbox';
+import { Button, FormGroup, FormControlLabel } from '@mui/material';
 
 export default function MonthlyCollectionComponent() {
 	const [data, setdata] = useState([]);
@@ -18,6 +19,7 @@ export default function MonthlyCollectionComponent() {
 	const [showpage, setshowpage] = useState(false);
 	const [edit, setedit] = useState(false);
 	const [close, setClose] = useState(false);
+	const [filterActive, setFilterActive] = useState(true);
 
 	function dataGet() {
 		AxiosInstance.get(`/getcustomermonthly/`).then((res) => {
@@ -145,11 +147,22 @@ export default function MonthlyCollectionComponent() {
 						marginBottom: '8px',
 					}}>
 					<input
-						className='form-control w-75'
+						className='form-control w-50'
 						placeholder='Search Name | Place'
 						aria-label='First name'
 						onChange={(e) => setsearch(e.target.value)}
 					/>
+					<FormGroup>
+						<FormControlLabel
+							control={
+								<Checkbox
+									defaultValue={!filterActive}
+									onChange={(e) => setFilterActive((re) => !re)}
+								/>
+							}
+							label='Show Closed Loans'
+						/>
+					</FormGroup>
 					<Button
 						variant='outlined'
 						color='secondary'
@@ -165,14 +178,26 @@ export default function MonthlyCollectionComponent() {
 			<div className='userTable-container'>
 				<table className='table table-bordered table-striped table-hover'>
 					<thead>
-						<tr>
-							<th> Name</th>
-							<th>Place</th>
-							<th>Amount</th>
-							<th>Intrest Paid</th>
-							<th>Balance</th>
-							<th>Action</th>
-						</tr>
+						{filterActive ? (
+							<tr>
+								<th> Name</th>
+								<th>Place</th>
+								<th>Amount</th>
+								<th>Intrest Paid</th>
+								<th>Balance</th>
+								<th>Action</th>
+							</tr>
+						) : (
+							<tr>
+								<th> Name</th>
+								<th>Place</th>
+								<th>Amount</th>
+								<th>Intrest Paid</th>
+								<th>Start Date</th>
+								<th>End Date</th>
+								<th>Action</th>
+							</tr>
+						)}
 					</thead>
 					<tbody>
 						{data
@@ -185,7 +210,43 @@ export default function MonthlyCollectionComponent() {
 							.map((item) => {
 								return (
 									<tr className='user-table' key={item.id}>
-										{item.active ? (
+										{filterActive ? (
+											item.active ? (
+												<>
+													<td
+														onClick={(_) => {
+															setShowHistory(true);
+															setCId(item.id);
+														}}>
+														{item.name}
+													</td>
+													<td>{item.place}</td>
+													<td>{parseInt(item.amount)}</td>
+													<td>{parseInt(item.intrest_paid)}</td>
+													<td>{item.balance}</td>
+													<td className='d-flex gap-4'>
+														<Button
+															variant='outlined'
+															onClick={(_) => {
+																setshowpage(true);
+																setCId(item.id);
+															}}>
+															<i class='bi bi-currency-dollar'></i>
+															Collect Money
+														</Button>
+														<Button
+															variant='outlined'
+															onClick={(_) => {
+																setClose(true);
+																setCId(item.id);
+															}}>
+															<i class='bi bi-currency-dollar'></i>
+															Close Loan
+														</Button>
+													</td>
+												</>
+											) : null
+										) : !item.active ? (
 											<>
 												<td
 													onClick={(_) => {
@@ -197,7 +258,8 @@ export default function MonthlyCollectionComponent() {
 												<td>{item.place}</td>
 												<td>{parseInt(item.amount)}</td>
 												<td>{parseInt(item.intrest_paid)}</td>
-												<td>{item.balance}</td>
+												<td>{item.start_date}</td>
+												<td>{item.end_date}</td>
 												<td className='d-flex gap-4'>
 													<Button
 														variant='outlined'
@@ -207,15 +269,6 @@ export default function MonthlyCollectionComponent() {
 														}}>
 														<i class='bi bi-currency-dollar'></i>
 														Collect Money
-													</Button>
-													<Button
-														variant='outlined'
-														onClick={(_) => {
-															setClose(true);
-															setCId(item.id);
-														}}>
-														<i class='bi bi-currency-dollar'></i>
-														Close Loan
 													</Button>
 												</td>
 											</>

@@ -75,11 +75,10 @@ export default function CollectIncharge({
 		<div className=''>
 			<div
 				style={{
-					height: '50%',
-					width: '90%',
+					height: '70%',
 					position: 'absolute',
 					top: '20%',
-					left: '5%',
+					left: '20%',
 					zIndex: '2',
 					flexWrap: 'wrap',
 					padding: 20,
@@ -128,7 +127,7 @@ export default function CollectIncharge({
 								Save
 							</button>
 						</div>
-						<div>
+						<div style={{ maxHeight: 300, overflow: 'auto' }}>
 							<table className='table table-bordered table-stripped'>
 								<thead>
 									<tr>
