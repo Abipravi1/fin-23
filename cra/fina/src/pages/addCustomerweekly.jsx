@@ -36,6 +36,22 @@ export default function AddCustomerWeekly() {
 		return date;
 	}
 
+	function calculateBalance() {
+		const w =
+			customerData?.periods === '12weeks'
+				? 12
+				: customerData?.periods === '15weeks'
+				? 15
+				: 0;
+		let ini = parseInt(customerData?.amount) / 10;
+		if (w === 12) {
+			return parseInt(ini) * 12;
+		}
+		if (w === 15) {
+			return parseInt(ini) * 15;
+		}
+	}
+
 	const saveData = async () => {
 		const data = {
 			name: customerData?.name,
@@ -44,7 +60,7 @@ export default function AddCustomerWeekly() {
 			contact: customerData?.contact,
 			email: customerData?.email,
 			amount: customerData?.amount,
-			balance: customerData?.balance,
+			balance: calculateBalance().toString(),
 			description: customerData?.description,
 			date: customerData?.date,
 
@@ -62,10 +78,9 @@ export default function AddCustomerWeekly() {
 
 	return (
 		<div className='d-flex flex-column p-2  align-items-center'>
-			
-			<div className='d-flex flex-column shadow-xl border rounded gap-4 align-items-center p-3 w-25'>
+			<div className='d-flex flex-column shadow-xl border rounded gap-4 align-items-center p-3'>
 				<h3>Weekly loan</h3>
-				
+
 				<TextField
 					id='outlined-basic'
 					label='Customer Name'

@@ -70,7 +70,7 @@ export default function CollectionModel({ customer_id, close, calla }) {
 
 	return (
 		<div
-			className='d-flex flex-row p-4 align-items-center justify-content-between w-100'
+			className='d-flex flex-row flex-wrap p-4 align-items-center justify-content-between w-100'
 			style={{ gap: 20 }}>
 			<div className='d-flex flex-column gap-3 w-50'>
 				<p className='h6 text-align-center'>{customer.name}</p>

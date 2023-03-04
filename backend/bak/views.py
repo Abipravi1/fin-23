@@ -76,6 +76,25 @@ def check_auth(Authkey):
         else:
             return True
 
+@api_view(['GET'])
+def verify_user(request, token):
+    Authkey = token
+    present_time = datetime.now()
+    '{:%H:%M:%S}'.format(present_time)
+    updated_time = datetime.now()
+    if Tokens.objects.filter(token=Authkey):
+        Auth = Tokens.objects.get(token=Authkey)
+        serializer = Tokensserializers(Auth, many=False)
+        expire_time = serializer.data.get('expire')
+        expire_time = expire_time.replace('Z', "")
+        expire_time = datetime.strptime(expire_time, '%Y-%m-%dT%H:%M:%S.%f')
+        if updated_time > expire_time:
+            return Response({"Error":'Not Logged.....'}, ststus=status.HTTP_401_UNAUTHORIZED) 
+        else:
+            return Response({'Error':'Not Logged.....'}, status=status.HTTP_200_OK) 
+    else:
+        return Response({'Error':'not Logged'}, status=status.HTTP_401_UNAUTHORIZED)
+
 @api_view(['GET', 'POST'])
 def customer_weekly(request, period):
     token = request.headers.get('authorization')
@@ -450,7 +469,7 @@ def calculateCIH(request):
     totalLoansM = MonthlyLoans.objects.filter(active=True).aggregate(Sum('amount'))
     totalincharge = InchargeAcc.objects.filter(active=True).aggregate(Sum('amount'))
     totalBalance = Customers.objects.filter(active=True).aggregate(Sum('balance'))
-    totalIntrest = MonthIntrestCollection.objects.filter(active=True).aggregate(Sum('amount'))
+    totalIntrest = MonthIntrestCollection.objects.aggregate(Sum('amount'))
     totalLoansCollectionM = AmountCollection.objects.filter(type="monthly").aggregate(Sum('amount'))
     totalLoansCollectionW = AmountCollection.objects.filter(type="weekly").aggregate(Sum('amount'))
     totalBalanceMonthly = MonthlyLoans.objects.filter(active=True).aggregate(Sum('balance'))
@@ -468,9 +487,7 @@ def calculateCIH(request):
     if totalLoansCollectionW['amount__sum'] == None:
         totalLoansCollectionW['amount__sum'] = 0   
     try:
-        cih = (int(totalLoans['amount__sum']) + int(totalLoansM['amount__sum'])) - (int(totalIntrest['amount__sum']) + int(totalLoansCollectionM['amount__sum']) + int(totalLoansCollectionW['amount__sum']) + int(totalincharge['amount__sum']))
-        if cih < 0:
-            cih *= -1
+        cih =  (int(totalIntrest['amount__sum']) + int(totalLoansCollectionM['amount__sum']) + int(totalLoansCollectionW['amount__sum']) + int(totalincharge['amount__sum'])) - (int(totalLoans['amount__sum']) + int(totalLoansM['amount__sum']))
     except:
         cih = 0
     

@@ -3,6 +3,7 @@ from django.urls import path
 
 urlpatterns = [
     path('login/', loginuser),
+    path('verifyuser/<str:token>/', verify_user),
     path('getcustomer/<str:period>/', customer_weekly),
     path('customer/<str:id>/', customer_weekly_details),
     path('getcustomermonthly/', customer_monthly),

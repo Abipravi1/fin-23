@@ -73,7 +73,7 @@ export default function AddMonthlyCustomer() {
 	return (
 		<div className='d-flex flex-column p-2  align-items-center'>
 			<p className='h5'>Monthly Loan Add</p>
-			<div className='d-flex flex-column shadow-xl border rounded gap-4 align-items-center p-3 w-25'>
+			<div className='d-flex flex-column shadow-xl border rounded gap-4 align-items-center p-3'>
 				<TextField
 					id='outlined-basic'
 					label='Customer Name'

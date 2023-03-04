@@ -49,13 +49,10 @@ export default function MonthlyCollectionComponent() {
 			{edit ? (
 				<div
 					style={{
-						width: '600px',
 						backgroundColor: '#f0ebeb',
 						zIndex: '99',
 						borderRadius: 10,
 						position: 'absolute',
-						top: '100px',
-						left: '30%',
 					}}>
 					<EditLoans setedit={setedit} customer_id={cid ? cid : 0} />{' '}
 				</div>
@@ -68,8 +65,6 @@ export default function MonthlyCollectionComponent() {
 						position: 'absolute',
 						width: '50%',
 						zIndex: 1,
-						top: '15%',
-						left: '15%',
 						maxHeight: '90%',
 						height: '80%',
 						overflow: 'auto',
@@ -90,8 +85,6 @@ export default function MonthlyCollectionComponent() {
 						position: 'absolute',
 						width: '70%',
 						zIndex: 1,
-						top: '15%',
-						left: '15%',
 						maxHeight: '70%',
 						height: '70%',
 						overflow: 'auto',
@@ -117,8 +110,6 @@ export default function MonthlyCollectionComponent() {
 						position: 'absolute',
 						width: '70%',
 						zIndex: 1,
-						top: '15%',
-						left: '15%',
 						maxHeight: '70%',
 						height: '70%',
 						overflow: 'auto',
@@ -145,6 +136,7 @@ export default function MonthlyCollectionComponent() {
 						display: 'flex',
 						justifyContent: 'space-between',
 						marginBottom: '8px',
+						flexWrap: 'wrap-reverse',
 					}}>
 					<input
 						className='form-control w-50'
@@ -175,21 +167,77 @@ export default function MonthlyCollectionComponent() {
 				</div>
 			</div>
 
-			<div className='userTable-container'>
-				<table className='table table-bordered table-striped table-hover'>
-					<thead>
-						{filterActive ? (
+			<div className='userTable-container table-responsive-sm'>
+				{filterActive ? (
+					<table className='table table-bordered table-striped table-hover'>
+						<thead>
 							<tr>
-								<th> Name</th>
+								<th>ID</th>
+								<th>Name</th>
 								<th>Place</th>
 								<th>Amount</th>
 								<th>Intrest Paid</th>
 								<th>Balance</th>
 								<th>Action</th>
 							</tr>
-						) : (
+						</thead>
+						<tbody>
+							{data
+								.filter((item) => {
+									return search.toLocaleLowerCase() === ''
+										? item
+										: item.name.toLocaleLowerCase().includes(search) ||
+												item.place.toLocaleLowerCase().includes(search);
+								})
+								.filter((item) => item.active === true)
+								.map((item, aa) => {
+									return (
+										<tr className='user-table' key={item.id}>
+											<>
+												<td>{aa + 1}</td>
+												<td
+													onClick={(_) => {
+														setShowHistory(true);
+														setCId(item.id);
+													}}>
+													{item.name}
+												</td>
+												<td>{item.place}</td>
+												<td>{parseInt(item.amount)}</td>
+												<td>{parseInt(item.intrest_paid)}</td>
+												<td>{item.balance}</td>
+												<td className='d-flex gap-4'>
+													<Button
+														variant='outlined'
+														onClick={(_) => {
+															setshowpage(true);
+															setCId(item.id);
+														}}>
+														<i class='bi bi-currency-dollar'></i>
+														Collect Money
+													</Button>
+													<Button
+														variant='outlined'
+														onClick={(_) => {
+															setClose(true);
+															setCId(item.id);
+														}}>
+														<i class='bi bi-currency-dollar'></i>
+														Close Loan
+													</Button>
+												</td>
+											</>
+										</tr>
+									);
+								})}
+						</tbody>
+					</table>
+				) : (
+					<table className='table table-bordered table-striped table-hover'>
+						<thead>
 							<tr>
-								<th> Name</th>
+								<th>ID</th>
+								<th>Name</th>
 								<th>Place</th>
 								<th>Amount</th>
 								<th>Intrest Paid</th>
@@ -197,57 +245,21 @@ export default function MonthlyCollectionComponent() {
 								<th>End Date</th>
 								<th>Action</th>
 							</tr>
-						)}
-					</thead>
-					<tbody>
-						{data
-							.filter((item) => {
-								return search.toLocaleLowerCase() === ''
-									? item
-									: item.name.toLocaleLowerCase().includes(search) ||
-											item.place.toLocaleLowerCase().includes(search);
-							})
-							.map((item) => {
-								return (
-									<tr className='user-table' key={item.id}>
-										{filterActive ? (
-											item.active ? (
-												<>
-													<td
-														onClick={(_) => {
-															setShowHistory(true);
-															setCId(item.id);
-														}}>
-														{item.name}
-													</td>
-													<td>{item.place}</td>
-													<td>{parseInt(item.amount)}</td>
-													<td>{parseInt(item.intrest_paid)}</td>
-													<td>{item.balance}</td>
-													<td className='d-flex gap-4'>
-														<Button
-															variant='outlined'
-															onClick={(_) => {
-																setshowpage(true);
-																setCId(item.id);
-															}}>
-															<i class='bi bi-currency-dollar'></i>
-															Collect Money
-														</Button>
-														<Button
-															variant='outlined'
-															onClick={(_) => {
-																setClose(true);
-																setCId(item.id);
-															}}>
-															<i class='bi bi-currency-dollar'></i>
-															Close Loan
-														</Button>
-													</td>
-												</>
-											) : null
-										) : !item.active ? (
+						</thead>
+						<tbody>
+							{data
+								.filter((item) => {
+									return search.toLocaleLowerCase() === ''
+										? item
+										: item.name.toLocaleLowerCase().includes(search) ||
+												item.place.toLocaleLowerCase().includes(search);
+								})
+								.filter((item) => item.active === true)
+								.map((item, uid) => {
+									return (
+										<tr className='user-table' key={item.id}>
 											<>
+												<td>{uid + 1}</td>
 												<td
 													onClick={(_) => {
 														setShowHistory(true);
@@ -272,12 +284,12 @@ export default function MonthlyCollectionComponent() {
 													</Button>
 												</td>
 											</>
-										) : null}
-									</tr>
-								);
-							})}
-					</tbody>
-				</table>
+										</tr>
+									);
+								})}
+						</tbody>
+					</table>
+				)}
 			</div>
 		</div>
 	);

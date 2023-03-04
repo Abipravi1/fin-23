@@ -20,6 +20,28 @@ function App() {
 		});
 	}, []);
 
+	useEffect(() => {
+		const token = JSON.parse(localStorage?.getItem('login'))?.token
+			? JSON.parse(localStorage?.getItem('login'))?.token
+			: 'p';
+		AxiosInstance.get(`/verifyuser/${token}`).then(
+			(res) => {
+				localStorage.removeItem('clear');
+			},
+			(err) => {
+				console.log(err, 'err');
+				if (err.response.status === 401) {
+					localStorage.setItem('clear', 1);
+					localStorage.removeItem('login');
+				}
+			},
+		);
+		const clear = localStorage.getItem('clear');
+		if (clear === 1) {
+			window.location.reload();
+		}
+	}, []);
+
 	return (
 		<div className='App'>
 			<BrowserRouter>
@@ -46,7 +68,7 @@ function App() {
 										Customer & Collections
 									</a>
 									<a class='nav-link text-white' href='/Viewincharge'>
-										Incharge
+										Credit Notes
 									</a>
 									<a class='nav-link text-white' href='/montlhy'>
 										Montlhy Loans
@@ -94,7 +116,7 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm d-card rounded border border-secondary d-flex flex-column'>
+										className='p-3 shadow-sm d-card rounded  d-flex flex-column'>
 										Total Loans Weekly: {data1?.LoansWeekly.amount__sum}
 									</div>
 									<div
@@ -106,7 +128,7 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm d-card rounded border border-secondary d-flex flex-column'>
+										className='p-3 shadow-sm d-card rounded  d-flex flex-column'>
 										Total Loans Monthly: {data1?.Monthly.amount__sum}
 									</div>
 									<div
@@ -118,7 +140,7 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm d-card rounded border border-secondary d-flex flex-column'>
+										className='p-3 shadow-sm d-card rounded  d-flex flex-column'>
 										Weekly Loan Pending Amount:{' '}
 										{data1?.balanceWeekly.balance__sum}
 									</div>
@@ -131,7 +153,7 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm d-card rounded border border-secondary d-flex flex-column'>
+										className='p-3 shadow-sm d-card rounded  '>
 										Monthly Loan Pending Amount:{' '}
 										{data1?.BalanceMonthly.balance__sum}
 									</div>
@@ -144,20 +166,7 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm d-card rounded border border-secondary '>
-										Monthly Loan Pending Amount:{' '}
-										{data1?.BalanceMonthly.balance__sum}
-									</div>
-									<div
-										style={{
-											cursor: 'pointer',
-											height: 70,
-											textAlign: 'center',
-											alignItems: 'center',
-											justifyContent: 'center',
-											display: 'flex',
-										}}
-										className='p-3 shadow-sm d-card rounded border border-secondary'>
+										className='p-3 shadow-sm d-card rounded '>
 										Total Weekly Collection:{' '}
 										{data1?.weeklyCollection.amount__sum}
 									</div>
@@ -170,7 +179,19 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-md d-card rounded border border-secondary '>
+										className='p-3 shadow-md d-card rounded  '>
+										Credit Amount: {data1?.inchage.amount__sum}
+									</div>
+									<div
+										style={{
+											cursor: 'pointer',
+											height: 70,
+											textAlign: 'center',
+											alignItems: 'center',
+											justifyContent: 'center',
+											display: 'flex',
+										}}
+										className='p-3 shadow-md d-card rounded  '>
 										Total Intrest: {data1?.intrest.amount__sum}
 									</div>
 									<div
@@ -182,7 +203,7 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-3 shadow-sm d-card rounded border border-secondary d-flex flex-column'>
+										className='p-3 shadow-sm d-card rounded  d-flex flex-column'>
 										Total Montlhy Collection:{' '}
 										{data1?.monthlyCollection.amount__sum}
 									</div>
@@ -195,8 +216,8 @@ function App() {
 											justifyContent: 'center',
 											display: 'flex',
 										}}
-										className='p-4 shadow-sm d-card rounded border border-secondary bg-primary text-white'>
-										Cash In Hand: {Math.abs(data1?.cih)}
+										className='p-4 shadow-sm d-card rounded  bg-primary text-white'>
+										Cash In Hand: {data1?.cih}
 									</div>
 								</div>
 							}></Route>

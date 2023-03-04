@@ -39,12 +39,11 @@ export default function ViewIncharge() {
 				<div
 					style={{
 						position: 'absolute',
-						top: '20%',
-						right: '50%',
 						backgroundColor: 'whitesmoke',
 						boxShadow: '1px -5px 20px 11px #a9a9a93b',
 						padding: 10,
 						borderRadius: 20,
+						zIndex: 1000,
 					}}>
 					<EditIncharge customer_id={cid} setedit={setEdit} />
 				</div>
@@ -62,7 +61,7 @@ export default function ViewIncharge() {
 					/>
 				</FormGroup>
 				<a href='/incharge' className='btn btn-primary'>
-					Add Incharge
+					Add new Credit
 				</a>
 			</div>
 			<div>

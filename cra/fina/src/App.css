@@ -1,6 +1,9 @@
 .d-card:hover {
-    box-shadow:0 5px 5px #02ff74 !important;
+    box-shadow:3px 3px 3px #02ff74 !important;
+	transform: translateY(-6px);
+    border:2px dashed #02ff74;
 }
 .d-card {
-    transition: .2s all;
+    transition: .1s all;
+    border:2px solid #02ff74
 }

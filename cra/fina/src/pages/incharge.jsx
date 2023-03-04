@@ -25,16 +25,16 @@ export default function Incharge() {
 				toast.success('incharge Data Added');
 				window.location.href = '/Viewincharge';
 			},
-			(err) => toast.error('Invalid Incharge Data'),
+			(err) => toast.error(err.response.data.Error),
 		);
 	};
 
 	return (
 		<div className='d-flex flex-column gap-4 w-100 align-items-center p-3'>
-			<div className='d-flex flex-column gap-4 align-items-center p-3 w-25'>
+			<div className='d-flex flex-column gap-4 align-items-center p-3'>
 				<TextField
 					id='outlined-basic'
-					label='Incharge Name'
+					label='Credit Name'
 					size='small'
 					className='form-control'
 					onChange={(e) =>

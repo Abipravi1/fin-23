@@ -136,6 +136,7 @@ export default function WeeklyCollectionComponent() {
 						display: 'flex',
 						justifyContent: 'space-between',
 						marginBottom: '8px',
+						flexWrap: 'wrap',
 					}}>
 					<div className='d-flex flex-row gap-4'>
 						<select
@@ -177,64 +178,132 @@ export default function WeeklyCollectionComponent() {
 				</div>
 			</div>
 
-			<div className='userTable-container'>
-				<table className='table table-bordered table-striped table-hover'>
-					<thead>
-						<tr>
-							<th> Name</th>
-							<th>Place</th>
-							<th>Amount</th>
-							<th>Balance</th>
-							<th>Paid</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						{data
-							.filter((item) => {
-								return weeks.toLocaleLowerCase() === '12'
-									? item.periods.includes('12')
-									: item.periods.includes('15');
-							})
-							.filter((item) => {
-								return search.toLocaleLowerCase() === ''
-									? item
-									: item.name.toLocaleLowerCase().includes(search) ||
-											item.place.toLocaleLowerCase().includes(search);
-							})
-							.map((item) => {
-								return (
-									<>
-										<tr className='user-table' key={item.id}>
-											{filterActive ? (
-												item.active ? (
-													<>
-														<td
+			<div className='userTable-container table-responsive-md'>
+				{filterActive ? (
+					<table className='table table-bordered table-striped table-hover'>
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Place</th>
+								<th>Amount</th>
+								<th>Balance</th>
+								<th>Paid</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							{data
+								.filter((item) => {
+									return weeks.toLocaleLowerCase() === '12'
+										? item.periods.includes('12')
+										: item.periods.includes('15');
+								})
+								.filter((item) => {
+									return search.toLocaleLowerCase() === ''
+										? item
+										: item.name.toLocaleLowerCase().includes(search) ||
+												item.place.toLocaleLowerCase().includes(search);
+								})
+								.filter((item) => item.active === true)
+								.map((item, uid) => {
+									return (
+										<>
+											<tr className='user-table' key={item.id}>
+												<>
+													<td
+														onClick={(_) => {
+															setShowHistory(true);
+															setCId(item.id);
+														}}>
+														{uid + 1}
+													</td>
+													<td
+														onClick={(_) => {
+															setShowHistory(true);
+															setCId(item.id);
+														}}>
+														{item.name}
+													</td>
+													<td
+														onClick={(_) => {
+															setShowHistory(true);
+															setCId(item.id);
+														}}>
+														{item.place}
+													</td>
+													<td>{item.amount}</td>
+													<td>{item.balance}</td>
+													<td>{item.amount - item.balance}</td>
+													<td>
+														<Button
+															variant='outlined'
 															onClick={(_) => {
-																setShowHistory(true);
+																setShowHistory(false);
+																setshowpage(true);
 																setCId(item.id);
 															}}>
-															{item.name}
-														</td>
-														<td>{item.place}</td>
-														<td>{item.amount}</td>
-														<td>{item.balance}</td>
-														<td>{item.amount - item.balance}</td>
-														<td>
-															<Button
-																variant='outlined'
-																onClick={(_) => {
-																	setshowpage(true);
-																	setCId(item.id);
-																}}>
-																<i class='bi bi-currency-dollar'></i>
-																Collect Money
-															</Button>
-														</td>
-													</>
-												) : null
-											) : !item.active ? (
+															<i class='bi bi-currency-dollar'></i>
+															Collect Money
+														</Button>
+													</td>
+												</>
+											</tr>
+										</>
+									);
+								})}
+							<tr>
+								<td>
+									<b>Total</b>
+								</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td>{sum()}</td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				) : (
+					<table className='table table-bordered table-striped table-hover'>
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Place</th>
+								<th>Amount</th>
+								<th>Balance</th>
+								<th>Paid</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							{data
+								.filter((item) => {
+									return weeks.toLocaleLowerCase() === '12'
+										? item.periods.includes('12')
+										: item.periods.includes('15');
+								})
+								.filter((item) => {
+									return search.toLocaleLowerCase() === ''
+										? item
+										: item.name.toLocaleLowerCase().includes(search) ||
+												item.place.toLocaleLowerCase().includes(search);
+								})
+								.filter((item) => item.active === false)
+								.map((item, uid) => {
+									return (
+										<>
+											<tr className='user-table' key={item.id}>
 												<>
+													<td
+														onClick={(_) => {
+															setShowHistory(true);
+															setCId(item.id);
+														}}>
+														{uid + 1}
+													</td>
 													<td
 														onClick={(_) => {
 															setShowHistory(true);
@@ -250,6 +319,7 @@ export default function WeeklyCollectionComponent() {
 														<Button
 															variant='outlined'
 															onClick={(_) => {
+																setShowHistory(false);
 																setshowpage(true);
 																setCId(item.id);
 															}}>
@@ -258,23 +328,24 @@ export default function WeeklyCollectionComponent() {
 														</Button>
 													</td>
 												</>
-											) : null}
-										</tr>
-									</>
-								);
-							})}
-						<tr>
-							<td>
-								<b>Total</b>
-							</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>{sum()}</td>
-							<td></td>
-						</tr>
-					</tbody>
-				</table>
+											</tr>
+										</>
+									);
+								})}
+							<tr>
+								<td>
+									<b>Total</b>
+								</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td>{sum()}</td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				)}
 			</div>
 		</div>
 	);
