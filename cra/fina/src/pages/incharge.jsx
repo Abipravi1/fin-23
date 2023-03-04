@@ -2,10 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { AxiosInstance } from '../axios/axios';
 
 import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
 import toast from 'react-hot-toast';
 
 export default function Incharge() {

@@ -10,7 +10,7 @@ import { Button, FormGroup, FormControlLabel } from '@mui/material';
 export default function ViewIncharge() {
 	const [data, setData] = useState([]);
 	const [showpage, setshowpage] = useState(false);
-	const [selectedrow, setselectedrow] = useState(null);
+	const [search, setSearch] = useState('');
 	const [selectedUserData, setSelectedUserData] = useState({});
 	const [edit, setEdit] = useState(false);
 	const [cid, setCId] = useState(null);
@@ -48,7 +48,7 @@ export default function ViewIncharge() {
 					<EditIncharge customer_id={cid} setedit={setEdit} />
 				</div>
 			) : null}
-			<div className='d-flex flex-row w-50 mt-4'>
+			<div className='d-flex flex-row w-100 mt-4'>
 				<FormGroup>
 					<FormControlLabel
 						control={
@@ -60,88 +60,128 @@ export default function ViewIncharge() {
 						label='Show Inactive Credit Vouchers'
 					/>
 				</FormGroup>
-				<a href='/incharge' className='btn btn-primary'>
+				<div>
+					<input
+						type='text'
+						className='form-control'
+						onChange={(e) => setSearch(e.target.value)}
+						placeHolder='Search Credit Note'
+						style={{ marginRight: 10, marginLeft: 10 }}
+					/>
+				</div>
+				<a href='/incharge' className='btn btn-primary mx-4'>
 					Add new Credit
 				</a>
 			</div>
 			<div>
-				<table className='table table-bordered table-stripped table-hover'>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Place</th>
-							<th>Contact</th>
-							<th>Amount Paid</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{data.length > 0 ? (
-							data?.map((details) => (
-								<tr onClick={() => {}}>
-									{filterActive ? (
-										details.active ? (
-											<>
-												{' '}
-												<td
-													onClick={() => {
-														setEdit(true);
-														setCId(details.id);
-													}}>
-													{' '}
-													{details.name}
-												</td>
-												<td>{details.place}</td>
-												<td>{details.contact}</td>
-												<td>{details.total_paid}</td>
-												<td className='d-flex gap-3'>
-													<button
-														className='btn btn-outline-dark'
-														onClick={() => {
-															setshowpage(true);
-															setSelectedUserData(details);
-														}}>
-														Collect
-													</button>
-												</td>
-											</>
-										) : null
-									) : (
-										!details.active && (
-											<>
-												<td
-													onClick={() => {
-														setEdit(true);
-														setCId(details.id);
-													}}>
-													{' '}
-													{details.name}
-												</td>
-												<td>{details.place}</td>
-												<td>{details.contact}</td>
-												<td>{details.total_paid}</td>
-												<td className='d-flex gap-3'>
-													<button
-														className='btn btn-outline-dark'
-														onClick={() => {
-															setshowpage(true);
-															setSelectedUserData(details);
-														}}>
-														Collect
-													</button>
-												</td>
-											</>
-										)
-									)}
-								</tr>
-							))
-						) : (
+				{filterActive ? (
+					<table className='table table-bordered table-stripped table-hover'>
+						<thead>
 							<tr>
-								<td colSpan='2'>No Collection Data Found</td>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Place</th>
+								<th>Contact</th>
+								<th>Amount Paid</th>
+								<th>Actions</th>
 							</tr>
-						)}
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							{data.length > 0 ? (
+								data
+									?.filter(
+										(dd) =>
+											dd.name.includes(search) || dd.place.includes(search),
+									)
+									.filter((s) => s.active === true)
+									.map((details, id) => (
+										<tr>
+											{' '}
+											<td
+												onClick={() => {
+													setEdit(true);
+													setCId(details.id);
+												}}>
+												{id + 1}
+											</td>
+											<td
+												onClick={() => {
+													setEdit(true);
+													setCId(details.id);
+												}}>
+												{' '}
+												{details.name}
+											</td>
+											<td>{details.place}</td>
+											<td>{details.contact}</td>
+											<td>{details.total_paid}</td>
+											<td className='d-flex gap-3'>
+												<button
+													className='btn btn-outline-dark'
+													onClick={() => {
+														setshowpage(true);
+														setSelectedUserData(details);
+													}}>
+													Collect
+												</button>
+											</td>
+										</tr>
+									))
+							) : (
+								<tr>
+									<td colSpan='2'>No Collection Data Found</td>
+								</tr>
+							)}
+						</tbody>
+					</table>
+				) : (
+					<table className='table table-bordered table-stripped table-hover'>
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Place</th>
+								<th>Contact</th>
+								<th>Amount Paid</th>
+							</tr>
+						</thead>
+						<tbody>
+							{data.length > 0 ? (
+								data
+									?.filter((dd) => dd.name.includes(search))
+									.filter((dd) => dd.active === false)
+									.map((details, id) => (
+										<tr onClick={() => {}}>
+											<>
+												<td
+													onClick={() => {
+														setEdit(true);
+														setCId(details.id);
+													}}>
+													{id + 1}
+												</td>
+												<td
+													onClick={() => {
+														setEdit(true);
+														setCId(details.id);
+													}}>
+													{' '}
+													{details.name}
+												</td>
+												<td>{details.place}</td>
+												<td>{details.contact}</td>
+												<td>{details.total_paid}</td>
+											</>
+										</tr>
+									))
+							) : (
+								<tr>
+									<td colSpan='2'>No Collection Data Found</td>
+								</tr>
+							)}
+						</tbody>
+					</table>
+				)}
 
 				{showpage ? (
 					<CollectIncharge
