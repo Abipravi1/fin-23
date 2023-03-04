@@ -37,25 +37,34 @@ export default function WeeklyCollectionComponent() {
 		dataGet();
 	}, [weeks]);
 
+	function paidCalculation(periods, amount) {
+		if (periods === '12weeks') {
+			return (parseInt(amount) / 10) * 12;
+		}
+		if (periods === '15weeks') {
+			return (parseInt(amount) / 10) * 15;
+		}
+	}
+
 	const sum = () => {
 		let s = 0;
 		if (filterActive) {
 			for (let i = 0; i < data.length; i++) {
-				s += data[i].active
-					? parseInt(data[i].amount) - parseInt(data[i].balance)
-					: 0;
+				const periods = data[i].periods;
+				let amount = data[i].amount;
+				amount = paidCalculation(periods, amount);
+				s += data[i].active ? parseInt(amount) - parseInt(data[i].balance) : 0;
 			}
 		} else {
 			for (let i = 0; i < data.length; i++) {
-				s += !data[i].active
-					? parseInt(data[i].amount) - parseInt(data[i].balance)
-					: 0;
+				const periods = data[i].periods;
+				let amount = data[i].amount;
+				amount = paidCalculation(periods, amount);
+				s += !data[i].active ? parseInt(amount) - parseInt(data[i].balance) : 0;
 			}
 		}
 		return s;
 	};
-	{
-	}
 
 	return (
 		<div className='p-3'>
@@ -207,6 +216,7 @@ export default function WeeklyCollectionComponent() {
 								})
 								.filter((item) => item.active === true)
 								.map((item, uid) => {
+									const amm = paidCalculation(item.periods, item.amount);
 									return (
 										<>
 											<tr className='user-table' key={item.id}>
@@ -234,7 +244,7 @@ export default function WeeklyCollectionComponent() {
 													</td>
 													<td>{item.amount}</td>
 													<td>{item.balance}</td>
-													<td>{item.amount - item.balance}</td>
+													<td>{amm - item.balance}</td>
 													<td>
 														<Button
 															variant='outlined'
@@ -293,6 +303,7 @@ export default function WeeklyCollectionComponent() {
 								})
 								.filter((item) => item.active === false)
 								.map((item, uid) => {
+									const amm = paidCalculation(item.periods, item.amount);
 									return (
 										<>
 											<tr className='user-table' key={item.id}>
@@ -314,7 +325,7 @@ export default function WeeklyCollectionComponent() {
 													<td>{item.place}</td>
 													<td>{item.amount}</td>
 													<td>{item.balance}</td>
-													<td>{item.amount - item.balance}</td>
+													<td>{amm - item.balance}</td>
 													<td>
 														<Button
 															variant='outlined'
