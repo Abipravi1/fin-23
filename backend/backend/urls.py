@@ -22,6 +22,7 @@ urlpatterns = [
     path('api/', include('bak.urls')),
     path("", TemplateView.as_view(template_name="index.html")),
     path("customer/", TemplateView.as_view(template_name="index.html")),
+    path("dashboard/", TemplateView.as_view(template_name="index.html")),
     path("Viewincharge", TemplateView.as_view(template_name="index.html")),
     path("montlhy", TemplateView.as_view(template_name="index.html")),
     path("addmonthlycustomer", TemplateView.as_view(template_name="index.html")),

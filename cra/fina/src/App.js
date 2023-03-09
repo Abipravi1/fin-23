@@ -10,6 +10,7 @@ import Incharge from './pages/incharge';
 import ViewIncharge from './pages/viewIncharge';
 import MonthlyCollectionComponent from './pages/monthlyCollection';
 import { AxiosInstance } from './axios/axios';
+import LOGO from './logo.jpg';
 
 function App() {
 	const [data1, setData] = useState(null);
@@ -49,7 +50,7 @@ function App() {
 				<div>
 					<nav class='navbar navbar-expand-lg bg-primary text-white'>
 						<div class='container-fluid'>
-							<a class='navbar-brand text-white' href='/'>
+							<a class='navbar-brand text-white' href='/dashboard'>
 								Vedha Finance
 							</a>
 							<button
@@ -104,7 +105,7 @@ function App() {
 							path='/montlhy'
 							element={<MonthlyCollectionComponent />}></Route>
 						<Route
-							path='/'
+							path='/dashboard'
 							element={
 								<div className='d-flex flex-row flex-wrap gap-3 p-4'>
 									<div
@@ -219,6 +220,18 @@ function App() {
 										className='p-4 shadow-sm d-card rounded  bg-primary text-white'>
 										Cash In Hand: {data1?.cih}
 									</div>
+								</div>
+							}></Route>
+						<Route
+							path='/'
+							element={
+								<div
+									style={{
+										overflow: 'hidden',
+										height: '100vh',
+										width: '100vw',
+									}}>
+									<img src={LOGO} height='100%' width='100%' />
 								</div>
 							}></Route>
 					</Routes>

@@ -48,7 +48,8 @@ export default function AddCustomerWeekly() {
 			return parseInt(ini) * 12;
 		}
 		if (w === 15) {
-			return parseInt(ini) * 15;
+			const newm = (parseInt(customerData?.amount) * 8) / 100;
+			return parseInt(newm) * 15;
 		}
 	}
 

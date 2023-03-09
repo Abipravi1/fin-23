@@ -42,7 +42,9 @@ export default function WeeklyCollectionComponent() {
 			return (parseInt(amount) / 10) * 12;
 		}
 		if (periods === '15weeks') {
-			return (parseInt(amount) / 10) * 15;
+			const newm = (parseInt(amount) * 8) / 100;
+
+			return parseInt(newm) * 15;
 		}
 	}
 
